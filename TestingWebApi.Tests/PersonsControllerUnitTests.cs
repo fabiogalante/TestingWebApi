@@ -29,5 +29,20 @@ namespace TestingWebApi.Tests
 
             persons.Count().Should().Be(50);
         }
+
+        [Fact]
+        public async Task Values_Get_Specific()
+        {
+            // Arrange
+            var controller = new PersonsController(new PersonService());
+
+            // Act
+            var result = await controller.Get(16);
+
+            // Assert
+            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+            var person = okResult.Value.Should().BeAssignableTo<Person>().Subject;
+            person.Id.Should().Be(16);
+        }
     }
 }
