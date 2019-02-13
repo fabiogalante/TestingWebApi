@@ -68,5 +68,35 @@ namespace TestingWebApi.Tests
             var person = okResult.Value.Should().BeAssignableTo<Person>().Subject;
             person.Id.Should().Be(51);
         }
+
+        [Fact]
+        public async Task Persons_Change()
+        {
+            // Arrange
+            var service = new PersonService();
+            var controller = new PersonsController(service);
+            var newPerson = new Person
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 50,
+                Title = "FooBar",
+                Email = "john.doe@foo.bar"
+            };
+
+            // Act
+            var result = await controller.Put(20, newPerson);
+
+            // Assert
+            var okResult = result.Should().BeOfType<NoContentResult>().Subject;
+
+            var person = service.Get(20);
+            person.Id.Should().Be(20);
+            person.FirstName.Should().Be("John");
+            person.LastName.Should().Be("Doe");
+            person.Age.Should().Be(50);
+            person.Title.Should().Be("FooBar");
+            person.Email.Should().Be("john.doe@foo.bar");
+        }
     }
 }
